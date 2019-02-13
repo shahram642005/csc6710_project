@@ -47,25 +47,27 @@ public class ControllerServlet extends HttpServlet
             	initializeDatabase(request, response);
             	break;
             case "/new":
-                showRegForm(request, response);
-                break;
-            case "/insert":
-                insertUser(request, response);
+                registerUser(request, response);
                 break;
             case "/login":
             	loginUser(request, response);
             	break;
-            case "/delete":
-                //deleteUser(request, response);
+            case "/insert":
+                insertUser(request, response);
                 break;
-            case "/edit":
-                //showEditForm(request, response);
+            case "/list":
+            	listUsers(request, response);
+            	break;
+            case "/delete":
+                deleteUser(request, response);
+                break;
+            case "/modify":
+                goToEditForm(request, response);
                 break;
             case "/update":
-                //updateUser(request, response);
+                updateUser(request, response);
                 break;
             default:
-                //listUser(request, response);
                 break;
             }
         }
@@ -85,7 +87,7 @@ public class ControllerServlet extends HttpServlet
 	}
 	
 	/* go to registration form */
-	private void showRegForm(HttpServletRequest request, HttpServletResponse response) throws SQLException, IOException, ServletException
+	private void registerUser(HttpServletRequest request, HttpServletResponse response) throws SQLException, IOException, ServletException
 	{
 		RequestDispatcher dispatcher = request.getRequestDispatcher("Registration.jsp");
         dispatcher.forward(request, response);
@@ -108,7 +110,7 @@ public class ControllerServlet extends HttpServlet
 		dispatcher.forward(request, response);
 	}
 	
-	/* check if user is in database and it's username and pass match the User table */
+	/* check if user is in database and it's user name and password match the User table */
 	private void loginUser(HttpServletRequest request, HttpServletResponse response) throws SQLException, IOException, ServletException
 	{
 		String userName = request.getParameter("userName");
@@ -120,10 +122,49 @@ public class ControllerServlet extends HttpServlet
 			RequestDispatcher dispatcher = request.getRequestDispatcher("UserJokes.jsp");
 			dispatcher.forward(request, response);
 		}
-		else
-		{
-			RequestDispatcher dispatcher = request.getRequestDispatcher("Error.jsp");
-			dispatcher.forward(request, response);
-		}
+	}
+	
+	/* delete a user profile */
+	private void listUsers(HttpServletRequest request, HttpServletResponse response) throws SQLException, IOException, ServletException
+	{
+		List<User> userList = userDAO.getUserList();
+		request.setAttribute("userList", userList);
+        RequestDispatcher dispatcher = request.getRequestDispatcher("Users.jsp");
+        dispatcher.forward(request, response);
+	}
+	
+	/* delete a user */
+	private void deleteUser(HttpServletRequest request, HttpServletResponse response) throws SQLException, IOException
+	{
+		int userId = Integer.parseInt(request.getParameter("userId"));
+		userDAO.deleteUser(userId);
+		response.sendRedirect("list");
+	}
+	
+	/* go to edit form */
+	private void goToEditForm(HttpServletRequest request, HttpServletResponse response) throws SQLException, IOException, ServletException
+	{
+		int userId = Integer.parseInt(request.getParameter("userId"));
+		User user = userDAO.getUser(userId);
+		request.setAttribute("user", user);
+        RequestDispatcher dispatcher = request.getRequestDispatcher("Registration.jsp");
+        dispatcher.forward(request, response);
+	}
+	
+	/* update user information */
+	private void updateUser(HttpServletRequest request, HttpServletResponse response) throws SQLException, IOException, ServletException
+	{
+		String userName = request.getParameter("userName");
+		String password = request.getParameter("password");
+		String firstName = request.getParameter("firstName");
+		String lastName = request.getParameter("lastName");
+		String email = request.getParameter("email");
+		String gender = request.getParameter("gender");
+		int age = Integer.parseInt(request.getParameter("age"));
+		User user = new User(userName, password, firstName, lastName, email, gender, age);
+		userDAO.updateUser(user);
+
+		RequestDispatcher dispatcher = request.getRequestDispatcher("Login.jsp");
+		dispatcher.forward(request, response);
 	}
 }

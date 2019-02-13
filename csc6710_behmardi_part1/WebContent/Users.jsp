@@ -42,9 +42,9 @@
                     <td><c:out value="${user.gender}" /></td>
                     <td><c:out value="${user.age}" /></td>
                     <td>
-                        <a href="/edit?id=<c:out value='${user.id}' />">Modify</a>
+                        <a href="modify?userId=<c:out value='${user.userId}' />">Modify</a>
                         &nbsp;&nbsp;&nbsp;&nbsp;
-                        <a href="/delete?id=<c:out value='${user.id}' />">Remove</a>                      
+                        <a href="delete?userId=<c:out value='${user.userId}' />">Remove</a>
                     </td>
                 </tr>
             </c:forEach>

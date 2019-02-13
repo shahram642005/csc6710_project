@@ -3,7 +3,12 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <html>
 <head>
-<title>Registeration</title>
+<c:if test="${user != null}">
+    <title>Create an account!</title>
+</c:if>
+<c:if test="${user == null}">
+    <title>Modify your Account!</title>
+</c:if>
 </head>
 <body>
 	<center>
@@ -18,14 +23,14 @@
         </c:if>
         <table border="1" cellpadding="5">
             <caption>
-                <h2>
+                <h3>
                     <c:if test="${user != null}">
-                        Modify Existing User's Information
+                        Please modify your account information:
                     </c:if>
                     <c:if test="${user == null}">
-                        Register New User
+                        Please insert your account information:
                     </c:if>
-                </h2>
+                </h3>
             </caption>
                 <c:if test="${user != null}">
                     <input type="hidden" name="userId" value="<c:out value='${user.userId}' />" />
@@ -87,9 +92,16 @@
                 </td>
             </tr>
             <tr>
+            <c:if test="${user != null}">
+                <td colspan="2" align="center">
+                    <input type="submit" value="save" />
+                </td>
+            </c:if>
+            <c:if test="${user == null}">
                 <td colspan="2" align="center">
                     <input type="submit" value="register" />
                 </td>
+            </c:if>
             </tr>
         </table>
         </form>

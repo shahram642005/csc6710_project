@@ -130,13 +130,13 @@ public class UserDAO
 	}
 	
 	/* delete a user from User table */
-	public boolean deleteUser(User user) throws SQLException
+	public boolean deleteUser(int userId) throws SQLException
 	{
 		String sqlDelete = "DELETE FROM User WHERE userId = ?";
 		connect();
 		
 		PreparedStatement prepareStatement = connection.prepareStatement(sqlDelete);
-		prepareStatement.setInt(1, user.getUserId());
+		prepareStatement.setInt(1, userId);
 		
 		boolean status = prepareStatement.executeUpdate() > 0;
 		prepareStatement.close();
@@ -145,7 +145,7 @@ public class UserDAO
 		return status;
 	}
 	
-	/* get a user from User table */
+	/* get a user from User table based on userName */
 	public User getUser(String userName) throws SQLException
 	{
 		User user = null;
@@ -159,6 +159,37 @@ public class UserDAO
 		while (result.next())
 		{
 			int userId = result.getInt("userId");
+			String password = result.getString("password");
+			String firstName = result.getString("firstName");
+			String lastName = result.getString("lastName");
+			String email = result.getString("email");
+			String gender = result.getString("gender");
+			int age = result.getInt("age");
+			
+			user = new User(userId, userName, password, firstName, lastName, email, gender, age);
+		}
+		
+		result.close();
+		preparedStatement.close();
+		disconnect();
+		
+		return user;
+	}
+	
+	/* get a user from User table based on userId */
+	public User getUser(int userId) throws SQLException
+	{
+		User user = null;
+		String sqlGet = "SELECT * FROM User WHERE userId = ?";
+		connect();
+		
+		PreparedStatement preparedStatement = connection.prepareStatement(sqlGet);
+		preparedStatement.setInt(1, userId);
+		ResultSet result = preparedStatement.executeQuery();
+		
+		while (result.next())
+		{
+			String userName = result.getString("userName");
 			String password = result.getString("password");
 			String firstName = result.getString("firstName");
 			String lastName = result.getString("lastName");
