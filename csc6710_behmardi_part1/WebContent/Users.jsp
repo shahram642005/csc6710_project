@@ -6,17 +6,14 @@
 <title>Users Management</title>
 </head>
 <body>
-	<center>
-		<h1>Users Management</h1>
-        <h2>
-        	<a href="init">Initialize Database</a>
-            &nbsp;&nbsp;&nbsp;
-            <a href="new">Register New User</a>
-            &nbsp;&nbsp;&nbsp;
-            <a href="list">List All Users</a>
-             
-        </h2>
-    </center>
+	<h1 style="text-align:center">Users Management</h1>
+    <h2 style="text-align:center">
+    	<a href="init">Initialize Database</a>
+        &nbsp;&nbsp;&nbsp;
+        <a href="new">Register New User</a>
+        &nbsp;&nbsp;&nbsp;
+        <a href="list">List All Users</a>
+    </h2>
     <div align="center">
         <table border="1" cellpadding="5">
             <caption><h2>List of Users</h2></caption>

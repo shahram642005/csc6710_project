@@ -6,9 +6,7 @@
 <title>Login</title>
 </head>
 <body>
-	<center>
-        <h1>Welcome to Jokes website!</h1>
-    </center>
+    <h1 style="text-align:center">Welcome to Jokes website!</h1>
     <div align="center">
         <form action="login" method="post">
         <table border="1" cellpadding="5">

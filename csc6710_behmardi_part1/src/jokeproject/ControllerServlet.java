@@ -23,11 +23,12 @@ public class ControllerServlet extends HttpServlet
 	/* implement the init method that runs once for the life cycle of servlet */
 	public void init()
 	{
-		// String jdbcURL = getServletContext().getInitParameter("jdbcURL");
-        // String jdbcUsername = getServletContext().getInitParameter("jdbcUsername");
-        // String jdbcPassword = getServletContext().getInitParameter("jdbcPassword");
+		String jdbcURL = getServletContext().getInitParameter("jdbcURL");
+        String jdbcUsername = getServletContext().getInitParameter("jdbcUsername");
+        String jdbcPassword = getServletContext().getInitParameter("jdbcPassword");
         
-		userDAO = new UserDAO("jdbc:mysql://127.0.0.1:3306/sampledb?", "john", "pass1234");
+		userDAO = new UserDAO(jdbcURL, jdbcUsername, jdbcPassword);
+		//userDAO = new UserDAO("jdbc:mysql://127.0.0.1:3306/sampledb", "john", "pass1234");
 	}
 	
 	/* implement the doPost method */
@@ -40,7 +41,7 @@ public class ControllerServlet extends HttpServlet
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException
 	{
         String action = request.getServletPath();
- 
+        
         try {
             switch (action) {
             case "/init":
@@ -82,8 +83,7 @@ public class ControllerServlet extends HttpServlet
 	{
 		userDAO.createUserTable();
 
-		RequestDispatcher dispatcher = request.getRequestDispatcher("Login.jsp");
-		dispatcher.forward(request, response);
+		response.sendRedirect("list");
 	}
 	
 	/* go to registration form */
@@ -117,9 +117,15 @@ public class ControllerServlet extends HttpServlet
 		String password = request.getParameter("password");
 		User user = new User();
 		user = userDAO.getUser(userName);
-		if (user.password == password)
+		
+		if (password != null && password.equals(user.password))
 		{
 			RequestDispatcher dispatcher = request.getRequestDispatcher("UserJokes.jsp");
+			dispatcher.forward(request, response);
+		}
+		else
+		{
+			RequestDispatcher dispatcher = request.getRequestDispatcher("Login.jsp");
 			dispatcher.forward(request, response);
 		}
 	}
@@ -154,6 +160,7 @@ public class ControllerServlet extends HttpServlet
 	/* update user information */
 	private void updateUser(HttpServletRequest request, HttpServletResponse response) throws SQLException, IOException, ServletException
 	{
+		int userId = Integer.parseInt(request.getParameter("userId"));
 		String userName = request.getParameter("userName");
 		String password = request.getParameter("password");
 		String firstName = request.getParameter("firstName");
@@ -161,10 +168,9 @@ public class ControllerServlet extends HttpServlet
 		String email = request.getParameter("email");
 		String gender = request.getParameter("gender");
 		int age = Integer.parseInt(request.getParameter("age"));
-		User user = new User(userName, password, firstName, lastName, email, gender, age);
+		User user = new User(userId, userName, password, firstName, lastName, email, gender, age);
 		userDAO.updateUser(user);
 
-		RequestDispatcher dispatcher = request.getRequestDispatcher("Login.jsp");
-		dispatcher.forward(request, response);
+		response.sendRedirect("list");
 	}
 }

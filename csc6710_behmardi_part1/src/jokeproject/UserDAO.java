@@ -44,9 +44,8 @@ public class UserDAO
             {
                 throw new SQLException(e);
             }
-            //connection = DriverManager.getConnection(databaseURL + databaseUserName + databasePassword + "&useSSL=false");
-            connection = DriverManager.getConnection("jdbc:mysql://127.0.0.1:3306/sampledb?"
-			          + "user=john&password=pass1234&useSSL=false");
+            connection = DriverManager.getConnection(databaseURL +  "?" + "user=" + databaseUserName + 
+            										 "&password=" + databasePassword + "&useSSL=false");
         }
 	}
 	
@@ -81,8 +80,49 @@ public class UserDAO
 		disconnect();
 		
 		/* insert the root user */
-		User user = new User("root", "pass1234", null, null, null, null, 0);
-		insertUser(user);		
+		List<User> userList = new ArrayList<User>();
+		userList.add(new User("root", "pass1234", null, null, null, null, 0));
+		userList.add(new User("John", "pass1234", null, null, null, null, 0));
+		userList.add(new User("Shahram", "pass1234", null, null, null, null, 0));
+		userList.add(new User("Gwen", "pass1234", null, null, null, null, 0));
+		userList.add(new User("Krishna", "pass1234", null, null, null, null, 0));
+		userList.add(new User("Elvis", "pass1234", null, null, null, null, 0));
+		userList.add(new User("Shiyong", "pass1234", null, null, null, null, 0));
+		userList.add(new User("Julian", "pass1234", null, null, null, null, 0));
+		userList.add(new User("Mike", "pass1234", null, null, null, null, 0));
+		userList.add(new User("Reza", "pass1234", null, null, null, null, 0));
+		userList.add(new User("Jesse", "pass1234", null, null, null, null, 0));
+		insertUser(userList);		
+	}
+	
+	/* insert a userList to User table */
+	public boolean insertUser(List<User> userList) throws SQLException
+	{
+		User user = new User();
+		boolean status = false;
+		
+		String sqlInsert = "INSERT INTO User (userName, password, firstName, lastName, email, gender, age) " +
+							"VALUES (?, ?, ?, ?, ?, ?, ?)";
+		connect();
+		for (int i = 0; i < userList.size(); i++)
+		{
+			user = userList.get(i);
+			
+			PreparedStatement preparedStatement = connection.prepareStatement(sqlInsert);
+			preparedStatement.setString(1, user.getUserName());
+			preparedStatement.setString(2, user.getPassword());
+			preparedStatement.setString(3, user.getFirstName());
+			preparedStatement.setString(4, user.getLastName());
+			preparedStatement.setString(5, user.getEmail());
+			preparedStatement.setString(6, user.getGender());
+			preparedStatement.setInt(7, user.getAge());
+			
+			status &= preparedStatement.executeUpdate() > 0;
+			preparedStatement.close();
+		}		
+		disconnect();
+		
+		return status;
 	}
 	
 	/* insert a user to User table */
@@ -111,7 +151,8 @@ public class UserDAO
 	public boolean updateUser(User user) throws SQLException
 	{
 		String sqlUpdate = "UPDATE User SET userName = ?, password = ?, firstName = ?, " +
-							"lastName = ?, email = ?, gender = ?, age = ?";
+							"lastName = ?, email = ?, gender = ?, age = ?" +
+							" WHERE userId = ?";
 		connect();
 		PreparedStatement prepareStatement = connection.prepareStatement(sqlUpdate);
 		prepareStatement.setString(1, user.getUserName());
@@ -121,6 +162,7 @@ public class UserDAO
 		prepareStatement.setString(5, user.getEmail());
 		prepareStatement.setString(6, user.getGender());
 		prepareStatement.setInt(7, user.getAge());
+		prepareStatement.setInt(8, user.getUserId());
 		
 		boolean status = prepareStatement.executeUpdate() > 0;
 		prepareStatement.close();
