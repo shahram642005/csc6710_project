@@ -58,12 +58,21 @@ public class UserDAO
 	    }
 	}
 	
+	/* drop User table */
+	public void dropUserTable() throws SQLException
+	{
+		connect();
+		Statement statement = connection.createStatement();
+		statement.executeUpdate("DROP TABLE IF EXISTS User");
+		statement.close();
+		disconnect();
+	}
+	
 	/* create User table */
 	public void createUserTable() throws SQLException
 	{
 		connect();
 		Statement statement = connection.createStatement();
-		statement.executeUpdate("DROP TABLE IF EXISTS User");
 		String sqlStatement = "CREATE TABLE IF NOT EXISTS User(" +
 							  " userId INTEGER not NULL AUTO_INCREMENT, " +
 							  " userName VARCHAR(50) not NULL, " +
@@ -74,12 +83,17 @@ public class UserDAO
 							  " gender VARCHAR(20), " +
 							  " age INTEGER, " +
 							  " PRIMARY KEY ( userId ), " + 
-							  " UNIQUE KEY (userName));";
+							  " UNIQUE KEY (userName), " +
+							  " UNIQUE KEY (email));";
 		statement.executeUpdate(sqlStatement);
 		statement.close();
 		disconnect();
+	}
 		
-		/* insert the root user */
+	/* initialize User table */
+	public void initUserTable() throws SQLException
+	{
+		/* insert the default users */
 		List<User> userList = new ArrayList<User>();
 		userList.add(new User("root", "pass1234", null, null, null, null, 0));
 		userList.add(new User("John", "pass1234", null, null, null, null, 0));
@@ -92,7 +106,7 @@ public class UserDAO
 		userList.add(new User("Mike", "pass1234", null, null, null, null, 0));
 		userList.add(new User("Reza", "pass1234", null, null, null, null, 0));
 		userList.add(new User("Jesse", "pass1234", null, null, null, null, 0));
-		insertUser(userList);		
+		insertUser(userList);
 	}
 	
 	/* insert a userList to User table */
