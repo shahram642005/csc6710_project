@@ -8,7 +8,7 @@
 <body>
     <h1 style="text-align:center">Welcome to Jokes website!</h1>
     <div align="center">
-        <form action="login" method="post">
+        <form action="loginUser" method="post">
         <table border="1" cellpadding="5">
             <caption>
                 <h2>Please login or register!</h2>
@@ -36,11 +36,26 @@
                     <input type="submit" value="login" />
                 </td>
                 <td align="center">
-                    <a href="new">register now!</a>
+                    <a href="newUser">register now!</a>
+                </td>
+                <td align="center">
+                    <a href="initTables?rootUser=FALSE">Initialize Database!</a>
                 </td>
             </tr>
         </table>
         </form>
+    </div>
+    <div>
+    <h2 style="text-align:center">
+	    <c:if test="${showErrMsg != null}">
+	        <font color="red">The user name or the password is not correct, please try again!</font>
+	    </c:if>
+	</h2>
+	<h2 style="text-align:center">
+	    <c:if test="${showInitMsg != null}">
+	        <font color="green">All tables are initialized!</font>
+	    </c:if>
+	</h2>
     </div>
 </body>
 </html>
